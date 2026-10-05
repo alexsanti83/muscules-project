@@ -198,7 +198,7 @@ function paintSync(){
   else if(S.sync==="error"){t="Error al guardar";c+=" bad"}
   else if(S.sync==="offline"){t="Sin conexión"+(n?" · "+n:"");c+=" busy"}
   else if(n||S.sync==="saving"){t="Guardando…";c+=" busy"}
-  else{t="Guardado en la nube";c+=" db"}
+  else{t="Guardado";c+=" db"}
   el.className=c;el.querySelector("span").textContent=t;
 }
 
@@ -411,7 +411,7 @@ function renderPeso(){
   var sb_=statusBox(wd);
   h+='<div class="status '+sb_.c+'"><span class="dot"></span><div><b>'+sb_.t+'</b><p>'+sb_.p+'</p></div></div>';
   h+='<div class="card"><div class="eyebrow">Media semanal frente al objetivo</div><div class="chartbox" id="chart">'+chartSvg(wd)+'<div class="tip" id="tip" hidden></div></div>';
-  h+='<div class="legend"><span><i style="width:16px;border-top:2px dashed var(--muted)"></i>Objetivo</span><span><i style="width:16px;border-top:2px solid var(--plate)"></i>Media semanal</span><span><i style="width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.6"></i>Pesajes</span><span><i style="width:12px;height:10px;background:var(--sunk);border:1px solid var(--line)"></i>Navidad</span></div></div>';
+  h+='<div class="legend"><span><i style="width:16px;border-top:2px dashed var(--muted)"></i>Objetivo</span><span><i style="width:16px;border-top:2px solid var(--plate)"></i>Media semanal</span><span><i style="width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.6"></i>Pesajes</span><span><i style="width:12px;height:10px;background:var(--plate-soft)"></i>Navidad</span></div></div>';
   h+='<h3 class="sec">Indicadores</h3>'+renderIndicators();
   h+='<h3 class="sec">Semana a semana</h3><div class="tblwrap card" style="padding:4px 10px"><table><thead><tr><th>Sem.</th><th>Desde</th><th>Objetivo</th><th>Media</th><th>Dif.</th><th>Cintura</th></tr></thead><tbody>';
   wd.forEach(function(x){
@@ -441,7 +441,7 @@ function renderIndicators(){
   if(!rows)return '<div class="card"><p class="empty" style="margin:0">Apunta tu peso, los datos de la báscula y las medidas con la cinta, y aquí verás cómo evoluciona cada uno.</p></div>';
   return '<div class="card" style="gap:0;padding:4px 14px">'+rows+'</div><p class="ex-meta" style="margin:0">La masa grasa y la magra se calculan con el peso y el % de grasa de la báscula. Las cifras de la báscula sirven para ver la tendencia, no el valor exacto.</p>';
 }
-var CH={W:340,H:210,pl:30,pr:8,pt:10,pb:24};
+var CH={W:340,H:210,pl:30,pr:16,pt:10,pb:24};
 function chartSvg(wd){
   var N=nWeeks(),vals=wd.map(function(x){return x.target});
   Object.keys(S.meds).forEach(function(d){if(S.meds[d].peso!=null&&weekOf(d)<=N)vals.push(S.meds[d].peso)});
@@ -452,7 +452,7 @@ function chartSvg(wd){
   function Y(v){return CH.pt+(hi-v)/(hi-lo)*(CH.H-CH.pt-CH.pb)}
   CH.X=X;CH.Y=Y;CH.N=N;
   var s='<svg viewBox="0 0 '+CH.W+' '+CH.H+'" role="img" aria-label="Peso medio por semana frente al objetivo">',w;
-  for(w=1;w<=N;w++)if(isHold(w))s+='<rect x="'+X(w-0.5)+'" y="'+CH.pt+'" width="'+(X(1)-X(0))+'" height="'+(CH.H-CH.pt-CH.pb)+'" fill="var(--sunk)"/>';
+  for(w=1;w<=N;w++)if(isHold(w))s+='<rect x="'+X(w-0.5)+'" y="'+CH.pt+'" width="'+(X(1)-X(0))+'" height="'+(CH.H-CH.pt-CH.pb)+'" fill="var(--plate-soft)" fill-opacity=".55"/>';
   for(var v=lo;v<=hi;v+=gs)s+='<line x1="'+CH.pl+'" x2="'+(CH.W-CH.pr)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)" stroke-width="1"/><text x="'+(CH.pl-5)+'" y="'+(Y(v)+3.5)+'" text-anchor="end">'+v+'</text>';
   var step=Math.max(1,Math.ceil(N/5));for(w=0;w<=N;w+=step)s+='<text x="'+X(w)+'" y="'+(CH.H-6)+'" text-anchor="middle">S'+w+'</text>';
   s+='<polyline fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4" points="'+wd.map(function(x){return X(x.w)+","+Y(x.target)}).join(" ")+'"/>';
@@ -602,7 +602,7 @@ view.addEventListener("click",function(ev){
   if(act==="edit-perfil"){S.editPerfil=true;S.formErr="";render();window.scrollTo(0,0);return}
   if(act==="cancel-perfil"){S.editPerfil=false;S.formErr="";render();return}
   if(act==="logout"){
-    if(Object.keys(Q).length){S.msg="Hay cambios sin subir. Conéctate a internet y espera a que ponga «Guardado en la nube» antes de cerrar sesión.";render();return}
+    if(Object.keys(Q).length){S.msg="Hay cambios sin subir. Conéctate a internet y espera a que arriba ponga «Guardado» antes de cerrar sesión.";render();return}
     stopTimer();sb.auth.signOut().catch(function(){}).then(function(){onUser(null)});return;
   }
 });
