@@ -11,6 +11,9 @@
 <meta name="theme-color" content="#0A0B0D">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="shortcut icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&display=swap">
 <style>
@@ -196,8 +199,8 @@ details.more .form{margin-top:8px}
 
 /* ===== Tema neón ===== */
 ::selection{background:var(--orange);color:var(--bg)}
-body{background:radial-gradient(130% 50% at 50% -8%,rgba(255,106,0,.12),transparent 62%) no-repeat,var(--bg);min-height:100vh}
-header.top{background:rgba(10,11,13,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+body{background:var(--bg);min-height:100vh}
+header.top{background:var(--bg)}
 .brand{font-weight:900;font-style:italic;font-stretch:104%;font-size:19px;letter-spacing:-.01em}
 .t-ring b{font-size:16px;font-stretch:88%}
 .brand span{color:var(--orange);text-shadow:0 0 14px var(--glow-o)}
@@ -237,7 +240,7 @@ h3.sec{font-weight:800;font-stretch:115%;text-transform:uppercase;font-size:18px
 #timer.end .fgc{stroke:var(--bg);filter:none}
 #timer.end .t-ring .bgc{stroke:rgba(0,0,0,.2)}
 #timer.end .t-in button{color:var(--bg);border-color:rgba(0,0,0,.3)}
-nav.tabs{background:rgba(14,16,19,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+nav.tabs{background:#0E1013}
 .tab[aria-current="page"] svg{filter:drop-shadow(0 0 6px var(--glow-o))}
 .stats .stat:first-child .v{color:var(--orange)}
 .stat .v{font-weight:800}
@@ -326,7 +329,7 @@ nav.tabs{background:rgba(14,16,19,.9);-webkit-backdrop-filter:blur(14px);backdro
 .pe-exb{display:grid;gap:8px;padding:6px 10px 12px}
 .pe-add{display:grid;grid-template-columns:1fr auto;gap:8px}
 .pe-new{display:grid;gap:8px;margin-top:8px}
-.pe-save{display:flex;gap:8px;position:sticky;bottom:0;z-index:4;margin-inline:-16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(10,11,13,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+.pe-save{display:flex;gap:8px;position:sticky;bottom:0;z-index:4;margin-inline:-16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
 .pe-save .btn.ghost{background:var(--surface)}
 .lnk{background:none;border:0;color:var(--orange);font-weight:600;padding:2px 0;justify-self:start;font-size:13px}
 .btn.warn{border-color:var(--red);color:var(--red)}
