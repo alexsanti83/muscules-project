@@ -6,6 +6,7 @@
 
 -- Tabla de la primera versión (vacía): ya no se usa.
 drop table if exists public.registros;
+-- (Este archivo ya incluye la actualización v3.)
 
 -- ---------------------------------------------------------------------
 -- 1. Perfil de cada usuario: datos fijos y objetivo
@@ -20,6 +21,7 @@ create table if not exists public.perfiles (
   peso_objetivo  numeric(5,1) not null check (peso_objetivo between 30 and 300),
   semanas        int          not null default 15 check (semanas between 4 and 104),
   pesos_plan     boolean      not null default true,   -- usar los pesos de partida del plan
+  plan           jsonb,                                -- plan de entrenamiento editable
   actualizado    timestamptz  not null default now()
 );
 
@@ -47,7 +49,7 @@ create table if not exists public.mediciones (
 create table if not exists public.sesiones (
   user_id      uuid not null default auth.uid() references auth.users on delete cascade,
   fecha        date not null,
-  plantilla    text not null check (plantilla in ('TA', 'PA', 'TB', 'PB')),  -- Torso A, Pierna A, Torso B, Pierna B
+  plantilla    text not null,          -- sesión del plan (TA, W1…) o CARDIO
   iniciada     timestamptz not null default now(),
   terminada    timestamptz,            -- vacío mientras la sesión está en curso
   actualizado  timestamptz not null default now(),
@@ -64,7 +66,8 @@ create table if not exists public.series (
   ejercicio    text not null,          -- p. ej. press_pecho, curl, sentadilla
   serie        int  not null check (serie between 1 and 10),
   kg           numeric(5,1),           -- peso usado (por mano en mancuernas)
-  reps         int,                    -- repeticiones, o segundos en planchas
+  reps         int,                    -- repeticiones, segundos en planchas o minutos de cardio
+  nota         text,                   -- tipo de cardio o goma usada
   hecha        boolean not null default false,
   hecha_en     timestamptz,
   actualizado  timestamptz not null default now(),
@@ -97,16 +100,9 @@ revoke all on public.perfiles, public.mediciones, public.sesiones, public.series
 -- 6. Vista para consultar el histórico desde Supabase (Table Editor)
 --    Solo series hechas, con el nombre de la sesión.
 -- ---------------------------------------------------------------------
-create or replace view public.historial_series with (security_invoker = true) as
-select s.user_id,
-       s.fecha,
-       case se.plantilla when 'TA' then 'Torso A' when 'PA' then 'Pierna A'
-                         when 'TB' then 'Torso B' when 'PB' then 'Pierna B' end as sesion,
-       s.ejercicio,
-       s.serie,
-       s.kg,
-       s.reps,
-       s.hecha_en
+drop view if exists public.historial_series;
+create view public.historial_series with (security_invoker = true) as
+select s.user_id, s.fecha, se.plantilla as sesion, s.ejercicio, s.serie, s.kg, s.reps, s.nota, s.hecha_en
 from public.series s
 join public.sesiones se using (user_id, fecha)
 where s.hecha;
